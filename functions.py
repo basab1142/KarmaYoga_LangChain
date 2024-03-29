@@ -4,13 +4,16 @@ from sentence_transformers import SentenceTransformer
 import pickle
 import numpy as np
 import faiss
-
+from langchain_google_genai import ChatGoogleGenerativeAI
+import os
 
 from dotenv import load_dotenv
 load_dotenv()
 
 from langchain import HuggingFaceHub
 llm_huggingface=HuggingFaceHub(repo_id="google/flan-t5-xxl",model_kwargs={"temperature":0.5,"max_length":1000})
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+llm_gemini = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY)
 
 loader = TextLoader('karmayoga.txt')
 data = loader.load()
@@ -54,6 +57,18 @@ def response(query):
     dist, I = vectorstore.search(search_vector, k = 5)
     sent = f"Using the information mentioned  find answer of {query} :" + '. '.join([docs[i].page_content for i in I[0]])
     result = llm_huggingface.invoke(sent)
+    return result
+
+def gemini_response(query):
+    with open(file_path, "rb") as f:
+        vectorstore = pickle.load(f)
+    with open(doc_file, "rb") as f:
+        docs = pickle.load(f)        
+    search_vector = encoder.encode([query])
+    dist, I = vectorstore.search(search_vector, k = 5)
+    sent = f"Using the information mentioned  find answer of {query} :" + '. '.join([docs[i].page_content for i in I[0]])
+    result = llm_gemini.invoke(sent).content
+
 
     return result
 

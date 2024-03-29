@@ -15,11 +15,10 @@
             <button type="submit">Send</button>
         </form>
     </div>
-    <div>
-        <button type="button" class="btn btn-primary btn-lg btn-block"><a href="gemini.html" class="btn">Use Gemini</a></button>
+    
+        <button type="button" class="btn btn-primary btn-lg btn-block"><a href="/" class="btn">Use HuggingFace</a></button>
 
     </div>
-
 
     
 
@@ -122,7 +121,7 @@ header h1 {
             if (!userMessage) return;
 
             // Send user message to Flask backend
-            const response = await fetch('/api/chat', {
+            const response = await fetch('/api/chat2', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
